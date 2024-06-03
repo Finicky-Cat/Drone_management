@@ -1,0 +1,17 @@
+
+.content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #FFFFFF;
+}
+h1 {
+  font-size: 32px;
+  color: #000000;
+  font-family: Arial, sans-serif;
+  margin-top: 10px; /* Adjusted margin for better spacing */
+}
+
+

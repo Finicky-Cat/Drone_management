@@ -1,0 +1,66 @@
+<app-main-toolbar></app-main-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav class="options" mode="side" opened>
+    <app-robot-tool-bar></app-robot-tool-bar>
+  </mat-sidenav>
+  <mat-sidenav-content>
+
+    <body class="RobDroneGo">
+    <div class="container">
+      <h2 class="text-center">Create Robot </h2>
+      <br>
+      <form (ngSubmit)="createRobot()">
+        <mat-form-field data-cy="nickName" class="full-width">
+          <mat-label>Robot nickName:</mat-label>
+          <input matInput [(ngModel)]="robot.nickName" name="nickName" required placeholder="Max 30 characters" >
+        </mat-form-field>
+
+        <br>
+
+        <mat-form-field data-cy=robotCode class="full-width">
+          <mat-label>Robot code:</mat-label>
+          <input matInput [(ngModel)]="robot.robotCode" name="robotCode" required placeholder="Max 250 characters">
+        </mat-form-field>
+
+        <br>
+
+        <mat-form-field data-cy="serialNumber" class="full-width">
+          <mat-label>Robot serial number:</mat-label>
+          <input matInput [(ngModel)]="robot.serialNr" name="serialNr" required placeholder="Max 50 characters">
+        </mat-form-field>
+
+        <br>
+
+        <mat-form-field data-cy=description class="full-width">
+          <mat-label>Robot description</mat-label>
+          <input matInput [(ngModel)]="robot.description" name="description" required placeholder="Max 250 characters">
+        </mat-form-field>
+
+        <br>
+
+        <mat-form-field data-cy="robotType" class="full-width">
+          <mat-label>Select a robot type</mat-label>
+          <mat-select [(ngModel)]="robot.robotType" name="robotType">
+            <mat-option id="{{robotType.name}}" *ngFor="let robotType of robotTypes" [value]="robotType.name" [matTooltip]= "getRobotTypeInfo(robotType)">
+              {{robotType.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <br>
+
+        <div>
+          <input type="submit" data-cy="input" value="create">
+        </div>
+
+      </form>
+    </div>
+    </body>
+
+
+
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

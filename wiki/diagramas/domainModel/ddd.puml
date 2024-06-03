@@ -1,0 +1,185 @@
+@startuml Domain Driven Design
+
+title "Domain Driven Design"
+' left to right direction
+' top to bottom direction
+skinparam Padding 10
+skinparam Nodesep 80
+skinparam ranksep 100
+skinparam groupInheritance 1
+' skinparam linetype ortho
+skinparam separation 1000
+skinparam NoteBackgroundColor #A9A9A9
+skinparam PackageStyle rectangle
+skinparam package {
+    BackgroundColor #D3D3D3
+    FontStyle bold
+}
+
+' hide circle
+' hide methods
+
+package Robot {
+    entity Robot <<Agregate root>>{
+        -serialNumber
+        -code
+        -state
+        -nickname
+        -description
+    }
+}
+
+package RobotType {
+    entity RobotType <<Agregate root>> {
+        - typeName
+        - brand
+        - model
+    }
+
+}
+package TaskType {
+    enum TaskType <<enum>> {
+        -Surveillance
+        -Delivery
+    }
+}
+
+package Task {
+    interface Task <<Agregate root>> {
+        - identificationCode
+        - description
+    }
+
+    entity SurveillanceTask {
+        - emergencyNumber
+    }
+    entity DeliveryTask {
+        - senderName
+        - receiverName
+        - senderContact
+        - receiverContact
+        - confirmationCode
+    }
+}
+
+package Building {
+    entity Building <<Agregate root>>{
+        - code
+        - name
+        - description
+        - dimensions
+    }
+}
+
+package Floor{
+    entity Floor <<Agregate root>> {
+        - description
+        - floorNr
+    }
+
+    entity FloorMap <<value object>>
+
+}
+
+package Elevator {
+    entity Elevator <<Agregate root>> {
+        - identificationNumber
+        - brand
+        - model
+        - serialNumber
+        - description
+      }
+}
+
+package Room{
+    entity Room <<Agregate root>> {
+        - name
+        - description
+    }
+
+    enum RoomCategory <<enum>>{
+            - Classroom
+            - Office
+            - Laboratory
+            - Auditorium
+    }
+}
+
+package Pathway {
+    entity Pathway <<Agregate root>>{
+    }
+}
+
+package User {
+  entity User <<Agregate root>> {
+    - firstName
+    - lastName
+    - email
+    - phoneNumber
+    - nif
+   }
+}
+
+package TaskRequisition {
+    interface TaskRequisition <<Agregate root>> {
+        - identificationCode
+        - description
+        - state
+    }
+
+    entity SurveillanceTaskRequisition {
+        - emergencyNumber
+    }
+
+    entity DeliveryTaskRequisition {
+        - senderName
+        - receiverName
+        - senderContact
+        - receiverContact
+        - confirmationCode
+    }
+
+}
+
+Task.SurveillanceTask ..|> Task.Task: extends
+Task.DeliveryTask ..|> Task.Task: extends
+
+TaskRequisition.SurveillanceTaskRequisition ..|> TaskRequisition.TaskRequisition: extends
+TaskRequisition.DeliveryTaskRequisition ..|> TaskRequisition.TaskRequisition: extends
+
+Room.Room --> RoomCategory: is of a
+Room.Room --> Building.Building: is in
+
+RobotType.RobotType --> "*" TaskType.TaskType: executes
+
+Floor.Floor --> Building.Building: is on
+Floor.Floor "*" <-- Elevator.Elevator : serves
+Floor.Floor <-- Room.Room: is on
+Floor.Floor --> Floor.FloorMap: has
+
+Elevator.Elevator --> Building.Building: is on
+
+Task.Task --> Room.Room: delivery
+Task.Task --> Room.Room: pickup
+
+TaskRequisition.TaskRequisition --> Room.Room: delivery
+TaskRequisition.TaskRequisition --> Room.Room: pickup
+
+Task.SurveillanceTask -> Floor.Floor: is executed on
+TaskRequisition.SurveillanceTaskRequisition -> Floor.Floor: will be executed on
+
+Pathway.Pathway --> "2" Floor.Floor: connects
+
+Robot.Robot --> RobotType.RobotType : is of a
+
+Task.Task --> TaskType.TaskType : is of a
+Task.Task --> User.User : is executed by
+
+TaskRequisition.TaskRequisition --> TaskType.TaskType : is of a
+TaskRequisition.TaskRequisition --> User.User : will be executed by
+
+Robot.Robot "1" --> "*" Task.Task : executes
+
+TaskRequisition.TaskRequisition "1" ..> "1" Task.Task : is of a
+
+@enduml

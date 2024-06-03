@@ -1,0 +1,59 @@
+<app-main-toolbar></app-main-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav class="options" mode="side" opened>
+    <app-room-sidenav></app-room-sidenav>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="container">
+
+      <form (ngSubmit)="createRoom()">
+        <h2 class="text-center">Create Room</h2>
+        <br>
+
+        <mat-form-field class="full-width">
+          <mat-label>Room name</mat-label>
+          <input matInput [(ngModel)]="room.name" name="name" required placeholder="Max 50 characters">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Room description</mat-label>
+          <input matInput [(ngModel)]="room.description" name="description" required placeholder="Max 250 characters">
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Room category</mat-label>
+          <mat-select [(ngModel)]="room.category" name="category" required>
+            <mat-option *ngFor="let category of categories" [value]="category.toString()" >
+              {{ category.toString() | titlecase }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Select a building</mat-label>
+          <mat-select [(ngModel)]="room.building" name="buildingDesignation" >
+            <mat-option id="{{building.designation}}" *ngFor="let building of buildings" [value]="building.code" [matTooltip]="getBuildingInfo(building)" (click)="listFloorsOfBuilding(building)">
+              {{building.designation}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Select a floor</mat-label>
+          <mat-select [(ngModel)]="room.floor" name="floor">
+            <mat-option id="{{floor.floorNr}}" *ngFor="let floor of floors" [value]="floor.floorNr" [matTooltip]= "getFloorInfo(floor)" >
+              {{floor.floorNr}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <div>
+          <input type="submit" value="create">
+        </div>
+
+      </form>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

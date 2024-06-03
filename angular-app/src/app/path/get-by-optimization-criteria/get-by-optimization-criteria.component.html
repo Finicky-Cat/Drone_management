@@ -1,0 +1,147 @@
+<app-main-toolbar></app-main-toolbar>
+<body class="RobDroneGo">
+<div class="container">
+  <h2 class="text-center">Get optimized paths between floors.</h2>
+  <br>
+  <form (ngSubmit)="getPathBetweenFloors()">
+
+    <mat-form-field class="full-width">
+      <mat-label>Select a source building</mat-label>
+      <mat-select [(ngModel)]="buildingSource" name="buildingSource"
+                  (ngModelChange)="listFloorsOfBuildingSource($event)">
+        <mat-option *ngFor="let building of buildings" [value]="building.designation"
+                    [matTooltip]="getBuildingInfo(building)">
+          {{building.designation}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Select a building destination</mat-label>
+      <mat-select [(ngModel)]="buildingDestination" name="buildingSource"
+                  (ngModelChange)="listFloorsOfBuildingDestination($event)">
+        <mat-option *ngFor="let building of buildings" [value]="building.designation"
+                    [matTooltip]="getBuildingInfo(building)">
+          {{building.designation}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Select a source Floor</mat-label>
+      <mat-select [(ngModel)]="floorSource" name="floorSource"
+                  (ngModelChange)="listRoomsOfFloorSource()">
+        <mat-option *ngFor="let floor of floorsSource" [value]="floor.floorNr" [matTooltip]="getFloorInfo(floor)">
+          {{floor.floorNr}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Select a destination Floor</mat-label>
+      <mat-select [(ngModel)]="floorDestination" name="floorDestination"
+                  (ngModelChange)="listRoomsOfFloorDestination()">
+        <mat-option *ngFor="let floor of floorsDestination" [value]="floor.floorNr" [matTooltip]="getFloorInfo(floor)">
+          {{floor.floorNr}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Select an optimization criteria</mat-label>
+      <mat-select [(ngModel)]="selectedOptimizationCriteria" name="optimizationCriteria">
+        <mat-option *ngFor="let criteria of optimizationCriteria" [value]="criteria" >
+          {{criteria}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox  (change)="toggleRoomsOption()"> Travel Between Rooms. It might take a while. All floor maps should be up to date.</mat-checkbox>
+    <div *ngIf="roomToRoom">
+      <mat-form-field class="full-width">
+        <mat-label>Select a source room</mat-label>
+        <mat-select [(ngModel)]="roomSource" name="floorSource">
+          <mat-option *ngFor="let room of sourceRooms" [value]="room.name" [matTooltip]="getRoomInfo(room)">
+            {{room.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Select a destination room</mat-label>
+        <mat-select [(ngModel)]="roomDestination" name="floorSource">
+          <mat-option *ngFor="let room of destinationRooms" [value]="room.name" [matTooltip]="getRoomInfo(room)">
+            {{room.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+
+    <div>
+      <input type="submit" value="Find Path">
+    </div>
+
+  </form>
+
+  <mat-spinner class="wait-pathways" *ngIf="waiting"></mat-spinner>
+
+
+  <div *ngIf="path">
+    <h2 class="text-center">Buildings:</h2>
+    <div *ngFor="let building of path.buildings">
+      <mat-card>
+        <mat-card-content>
+          {{building}}:
+        </mat-card-content>
+      </mat-card>
+      <br>
+    </div>
+    <br>
+    <h2 class="text-center">Path</h2>
+      <div *ngFor="let obj of path.paths">
+        <mat-card>
+          <mat-card-content>
+            {{obj.element}}:
+            <br>
+            Floor Source : {{obj.floorSource}}
+            <br>
+            Floor Destination : {{obj.floorDestination}}
+            <br>
+          </mat-card-content>
+        </mat-card>
+        <br>
+      </div>
+  </div>
+
+  <div *ngIf="path?.pathInside">
+    <h2 class="text-center">Path Inside</h2>
+    <div *ngFor="let cells of path?.pathInside">
+      <mat-card>
+        <mat-card-content class = "example-card">
+        <div *ngFor="let cell of cells">
+          <mat-card>
+            <mat-card-content>
+              Cell: <br><br>
+              Line : {{cell.line}} <br><br>
+              Column : {{cell.column}} <br><br>
+            </mat-card-content>
+          </mat-card>
+          <br>
+        </div>
+        </mat-card-content>
+        <br>
+      </mat-card>
+      <br>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 20px;"></div>
+
+  <button mat-raised-button color="primary" class="custom-button" (click)="redirectToMapViewer()" [disabled]="!localStorage.getItem('pathFile')">
+    Visualize Path in Map Viewer
+  </button>
+
+
+  </div>
+</body>
